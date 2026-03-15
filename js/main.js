@@ -28,9 +28,9 @@ let demographics = {
     "Taoist"
   ],
 };
+// this is to be used later on... uncalled for now 
 let brands = ["Louis Vuitton", "Tencent", "Visa","McDonald's", "YouTube", "Instagram", "Facebook", "Apple", "NVIDIA", "Amazon", "Google"
   ]
-
 
 let video;
 let keypoints;
@@ -53,7 +53,6 @@ let showCamera = false;
 
 function preload() {
   // Initialize MoveNet/Blazepose model for body pose detection
-  // bodyPose = ml5.bodyPose("MoveNet"); // movenet
   bodyPose = ml5.bodyPose("BlazePose"); // blazepose
 
   // Retrieve the skeleton structure used by the model
@@ -64,7 +63,6 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   frameRate(15);
   video = createCapture(VIDEO);
-  // video = createCapture(VIDEO, { flipped: true });
   video.size(1080, 720);
   video.hide();
 
@@ -86,14 +84,6 @@ function setup() {
     showCamera = !showCamera;
   });
 
-  // ---- define random demographic objects
-  // myEthnicity = random(demographics.ethnicity);
-  // myGender = random(demographics.gender);
-  // mySexuality = random(demographics.sexuality);
-  // myAge = random(demographics.age);
-  // myPolitics = random(demographics.politics);
-  // myReligion = random(demographics.religion);
-
   // pre-assign someone to one from each category 
   myDigitalIdentity = [
     myEthnicity = random(demographics.ethnicity), 
@@ -107,11 +97,7 @@ function setup() {
 
   // -- this is to loop the object in
   for (let i = 0; i < 100; i++) {
-    // let categories = Object.keys(demographics);
-    // let randomCat = random(categories);
-    // let pickedWord = random(demographics[randomCat]);
     let pickedWord = random(myDigitalIdentity);
-
     // to update later with the python callback of deepFace data == age, ethnicity, and gender. At the moment it is random.
     textBoxes[i] = new TextBox(0, 0, pickedWord);
   }
@@ -169,6 +155,7 @@ function updateHitPoints(pose) {
   let midTorso = getMid(midN, midH, 0.5);
   allHitPoints.push(midTorso);
 
+  // draw points inbetween those all for fuller body 
   let midTorsoTop = getMid(midN, midH, 0.25);
   allHitPoints.push(midTorsoTop);
   let midTorsoBottom = getMid(midN, midH, 0.75);
@@ -215,13 +202,12 @@ function draw() {
 
     ///// ------------ TOGGLE POINTS ON THE BUTTON
     if (showPoints === true) {
-      // ---- HERE ARE ALL THE POINTS
+      // ---- HERE ARE ALL THE POINTS 
       for (let i = 0; i < allHitPoints.length; i++) {
         let keypoint = allHitPoints[i];
         stroke("#ffffff");
         noFill();
         let graphicSize = 20;
-        // circle(keypoint.x, keypoint.y, 50);
         line(keypoint.x - (graphicSize / 2), keypoint.y - (graphicSize / 2), keypoint.x + graphicSize, keypoint.y + graphicSize);
         line(keypoint.x + graphicSize, keypoint.y - (graphicSize / 2), keypoint.x - (graphicSize / 2), keypoint.y + graphicSize);
       }
